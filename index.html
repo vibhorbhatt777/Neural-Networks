@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Neural Network Diagram</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f0f2f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        
+        .network-diagram {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 40px 0;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .layer-section {
+            flex: 1;
+            min-width: 200px;
+            text-align: center;
+            background: #fafafa;
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid #e1e8ed;
+        }
+        
+        .layer-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #34495e;
+            margin-bottom: 15px;
+            background: #3498db;
+            color: white;
+            padding: 8px;
+            border-radius: 8px;
+        }
+        
+        .input-image {
+            width: 120px;
+            height: 120px;
+            border: 3px solid #2c3e50;
+            border-radius: 8px;
+            margin: 10px auto;
+            background: #000;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .digit-3 {
+            color: #00ff00;
+            font-size: 60px;
+            font-weight: bold;
+            text-shadow: 0 0 10px #00ff00;
+        }
+        
+        .pixel-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 15px);
+            gap: 1px;
+            margin: 10px auto;
+            justify-content: center;
+        }
+        
+        .pixel {
+            width: 15px;
+            height: 15px;
+            background: #ddd;
+            border-radius: 2px;
+        }
+        
+        .pixel.active {
+            background: #e74c3c;
+        }
+        
+        .neurons-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .neuron {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #3498db;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            box-shadow: 0 3px 10px rgba(52, 152, 219, 0.3);
+            border: 3px solid white;
+        }
+        
+        .output-neuron {
+            background: #e74c3c;
+            position: relative;
+        }
+        
+        .output-neuron.winner {
+            background: #27ae60;
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(39, 174, 96, 0.5);
+        }
+        
+        .connection-arrow {
+            font-size: 24px;
+            color: #7f8c8d;
+            margin: 0 10px;
+        }
+        
+        .math-section {
+            background: #ecf0f1;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            border-left: 4px solid #3498db;
+        }
+        
+        .math-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .formula {
+            font-family: 'Courier New', monospace;
+            background: #34495e;
+            color: #ecf0f1;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        
+        .step-by-step {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .step {
+            background: #fff;
+            border: 2px solid #bdc3c7;
+            border-radius: 10px;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .step-number {
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: #e74c3c;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .step h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        
+        .weights-visual {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .weight-matrix {
+            text-align: center;
+        }
+        
+        .matrix {
+            display: grid;
+            grid-template-columns: repeat(4, 40px);
+            gap: 3px;
+            margin: 10px auto;
+            justify-content: center;
+        }
+        
+        .weight-cell {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            font-size: 10px;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .weight-before {
+            background: #e74c3c;
+        }
+        
+        .weight-after {
+            background: #27ae60;
+        }
+        
+        .learning-process {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        
+        .learning-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .learning-step {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            min-width: 150px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .probability-display {
+            background: #2c3e50;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        
+        .prob-bar {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+            color: white;
+            font-size: 12px;
+        }
+        
+        .prob-label {
+            width: 30px;
+        }
+        
+        .prob-fill {
+            flex: 1;
+            height: 15px;
+            background: #34495e;
+            border-radius: 8px;
+            margin: 0 10px;
+            overflow: hidden;
+        }
+        
+        .prob-inner {
+            height: 100%;
+            border-radius: 8px;
+            transition: width 0.8s ease;
+        }
+        
+        .prob-value {
+            width: 40px;
+            text-align: right;
+        }
+        
+        .key-insight {
+            background: #f39c12;
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .animate {
+            animation: pulse 2s infinite;
+        }
+        
+        @media (max-width: 768px) {
+            .network-diagram {
+                flex-direction: column;
+            }
+            .connection-arrow {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 Neural Network: Step-by-Step Visual Breakdown</h1>
+        
+        <!-- Main Network Diagram -->
+        <div class="network-diagram">
+            <!-- Input Layer -->
+            <div class="layer-section">
+                <div class="layer-title">INPUT LAYER</div>
+                <div class="input-image">
+                    <div class="digit-3">3</div>
+                </div>
+                <div>28 × 28 = 784 pixels</div>
+                <div class="pixel-grid" id="pixelGrid"></div>
+                <div style="font-size: 12px; margin-top: 10px;">Each pixel = 0.0 to 1.0</div>
+            </div>
+            
+            <div class="connection-arrow">→</div>
+            
+            <!-- Hidden Layer -->
+            <div class="layer-section">
+                <div class="layer-title">HIDDEN LAYER</div>
+                <div class="neurons-container">
+                    <div class="neuron animate">H1</div>
+                    <div class="neuron animate">H2</div>
+                    <div class="neuron animate">H3</div>
+                    <div class="neuron animate">H4</div>
+                    <div class="neuron animate">H5</div>
+                    <div class="neuron animate">H6</div>
+                    <div class="neuron animate">H7</div>
+                    <div class="neuron animate">H8</div>
+                    <div class="neuron animate">H9</div>
+                    <div class="neuron animate">H10</div>
+                </div>
+                <div style="font-size: 12px; margin-top: 10px;">10 Pattern Detectors</div>
+            </div>
+            
+            <div class="connection-arrow">→</div>
+            
+            <!-- Output Layer -->
+            <div class="layer-section">
+                <div class="layer-title">OUTPUT LAYER</div>
+                <div class="neurons-container">
+                    <div class="output-neuron">0</div>
+                    <div class="output-neuron">1</div>
+                    <div class="output-neuron">2</div>
+                    <div class="output-neuron winner animate">3</div>
+                    <div class="output-neuron">4</div>
+                    <div class="output-neuron">5</div>
+                    <div class="output-neuron">6</div>
+                    <div class="output-neuron">7</div>
+                    <div class="output-neuron">8</div>
+                    <div class="output-neuron">9</div>
+                </div>
+                <div style="font-size: 12px; margin-top: 10px;">10 Probabilities</div>
+                
+                <div class="probability-display">
+                    <div style="text-align: center; margin-bottom: 10px; font-weight: bold;">Confidence Levels</div>
+                    <div id="probabilityBars"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mathematical Details -->
+        <div class="math-section">
+            <div class="math-title">🔢 Mathematical Flow</div>
+            <div class="formula">
+                <strong>Step 1 - Hidden Layer:</strong><br>
+                Z1 = W1 × X + B1<br>
+                A1 = ReLU(Z1) = max(0, Z1)
+            </div>
+            <div class="formula">
+                <strong>Step 2 - Output Layer:</strong><br>
+                Z2 = W2 × A1 + B2<br>
+                A2 = Softmax(Z2) = e^Z2 / Σe^Z2
+            </div>
+        </div>
+        
+        <!-- Step by Step Process -->
+        <div class="step-by-step">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h3>Data Preparation</h3>
+                <p><strong>Input:</strong> 28×28 pixel image</p>
+                <p><strong>Flatten:</strong> Convert to 784×1 vector</p>
+                <p><strong>Normalize:</strong> Divide by 255 (0-1 range)</p>
+                <div class="formula">X_train = X_train / 255</div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <h3>Weight Initialization</h3>
+                <p><strong>W1:</strong> 10×784 matrix (random -0.5 to +0.5)</p>
+                <p><strong>B1:</strong> 10×1 vector (random -0.5 to +0.5)</p>
+                <p><strong>W2:</strong> 10×10 matrix (random -0.5 to +0.5)</p>
+                <p><strong>B2:</strong> 10×1 vector (random -0.5 to +0.5)</p>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <h3>Forward Propagation</h3>
+                <p><strong>Hidden:</strong> Z1 = W1·X + B1</p>
+                <p><strong>Activate:</strong> A1 = ReLU(Z1)</p>
+                <p><strong>Output:</strong> Z2 = W2·A1 + B2</p>
+                <p><strong>Probabilities:</strong> A2 = Softmax(Z2)</p>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">4</div>
+                <h3>Error Calculation</h3>
+                <p><strong>Convert Label:</strong> 3 → [0,0,0,1,0,0,0,0,0,0]</p>
+                <p><strong>Error:</strong> dZ2 = A2 - True_Answer</p>
+                <p><strong>Cost:</strong> How wrong were we?</p>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">5</div>
+                <h3>Backpropagation</h3>
+                <p><strong>Output Layer:</strong> Calculate dW2, dB2</p>
+                <p><strong>Hidden Layer:</strong> Calculate dW1, dB1</p>
+                <p><strong>Chain Rule:</strong> Error flows backward</p>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">6</div>
+                <h3>Weight Update</h3>
+                <p><strong>Learning Rate:</strong> α = 0.1</p>
+                <p><strong>Update:</strong> W = W - α × dW</p>
+                <p><strong>Adjust:</strong> B = B - α × dB</p>
+                <p><strong>Repeat:</strong> 500 iterations</p>
+            </div>
+        </div>
+        
+        <!-- Learning Process Visualization -->
+        <div class="learning-process">
+            <h2 style="text-align: center; margin-bottom: 20px;">🎯 The Learning Journey</h2>
+            <div class="learning-steps">
+                <div class="learning-step">
+                    <h4>BEFORE</h4>
+                    <div>Random Weights</div>
+                    <div style="font-size: 24px; color: #e74c3c;">10%</div>
+                    <div>Accuracy</div>
+                </div>
+                <div class="learning-step">
+                    <h4>ITERATION 100</h4>
+                    <div>Learning Patterns</div>
+                    <div style="font-size: 24px; color: #f39c12;">65%</div>
+                    <div>Accuracy</div>
+                </div>
+                <div class="learning-step">
+                    <h4>ITERATION 300</h4>
+                    <div>Getting Smarter</div>
+                    <div style="font-size: 24px; color: #3498db;">85%</div>
+                    <div>Accuracy</div>
+                </div>
+                <div class="learning-step">
+                    <h4>AFTER 500</h4>
+                    <div>Trained Weights</div>
+                    <div style="font-size: 24px; color: #27ae60;">95%</div>
+                    <div>Accuracy</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Weight Transformation -->
+        <div class="weights-visual">
+            <div class="weight-matrix">
+                <h4>Before Training (Random)</h4>
+                <div class="matrix" id="beforeWeights"></div>
+                <div style="font-size: 12px;">Random values -0.5 to +0.5</div>
+            </div>
+            
+            <div style="font-size: 24px; color: #3498db; display: flex; align-items: center;">→</div>
+            
+            <div class="weight-matrix">
+                <h4>After Training (Smart)</h4>
+                <div class="matrix" id="afterWeights"></div>
+                <div style="font-size: 12px;">Learned optimal patterns</div>
+            </div>
+        </div>
+        
+        <!-- Key Insight -->
+        <div class="key-insight">
+            🔑 KEY INSIGHT: Through 500 iterations of seeing examples and adjusting weights, 
+            random numbers become intelligent pattern recognition!
+        </div>
+        
+        <!-- Code Connection -->
+        <div class="math-section">
+            <div class="math-title">💻 Your Code in Action</div>
+            <div class="formula">
+                <strong>gradient_descent(X_train, Y_train, 500, 0.1)</strong><br>
+                ↓<br>
+                <strong>Forward → Calculate Error → Backward → Update → Repeat</strong><br>
+                ↓<br>
+                <strong>Random Brain → Smart Brain → 95% Accurate!</strong>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create pixel grid for input visualization
+        function createPixelGrid() {
+            const grid = document.getElementById('pixelGrid');
+            const pattern = [1,1,1,0,0,1, 0,0,1,1,1,0, 0,0,0,0,1,0, 0,1,1,1,0,0, 0,0,0,0,1,0, 1,1,1,1,0,0];
+            
+            pattern.forEach(pixel => {
+                const div = document.createElement('div');
+                div.className = 'pixel' + (pixel ? ' active' : '');
+                grid.appendChild(div);
+            });
+        }
+        
+        // Create probability bars
+        function createProbabilityBars() {
+            const container = document.getElementById('probabilityBars');
+            const probs = [0.01, 0.02, 0.03, 0.87, 0.01, 0.02, 0.01, 0.02, 0.01, 0.00];
+            
+            probs.forEach((prob, i) => {
+                const bar = document.createElement('div');
+                bar.className = 'prob-bar';
+                
+                const label = document.createElement('div');
+                label.className = 'prob-label';
+                label.textContent = i + ':';
+                
+                const fill = document.createElement('div');
+                fill.className = 'prob-fill';
+                
+                const inner = document.createElement('div');
+                inner.className = 'prob-inner';
+                inner.style.width = (prob * 100) + '%';
+                inner.style.background = i === 3 ? '#27ae60' : '#e74c3c';
+                
+                const value = document.createElement('div');
+                value.className = 'prob-value';
+                value.textContent = (prob * 100).toFixed(0) + '%';
+                
+                fill.appendChild(inner);
+                bar.appendChild(label);
+                bar.appendChild(fill);
+                bar.appendChild(value);
+                container.appendChild(bar);
+            });
+        }
+        
+        // Create weight matrices
+        function createWeightMatrices() {
+            const before = document.getElementById('beforeWeights');
+            const after = document.getElementById('afterWeights');
+            
+            // Random weights before training
+            for (let i = 0; i < 16; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'weight-cell weight-before';
+                cell.textContent = (Math.random() * 1 - 0.5).toFixed(1);
+                before.appendChild(cell);
+            }
+            
+            // Trained weights after training
+            const trainedWeights = [0.8, -0.3, 0.6, -0.2, 0.9, -0.4, 0.7, 0.1, -0.6, 0.4, 0.8, -0.1, 0.5, -0.7, 0.3, 0.9];
+            trainedWeights.forEach(weight => {
+                const cell = document.createElement('div');
+                cell.className = 'weight-cell weight-after';
+                cell.textContent = weight;
+                after.appendChild(cell);
+            });
+        }
+        
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            createPixelGrid();
+            createProbabilityBars();
+            createWeightMatrices();
+            
+            // Animate probability bars
+            setTimeout(() => {
+                const bars = document.querySelectorAll('.prob-inner');
+                bars.forEach(bar => {
+                    const width = bar.style.width;
+                    bar.style.width = '0%';
+                    setTimeout(() => {
+                        bar.style.width = width;
+                    }, 100);
+                });
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
